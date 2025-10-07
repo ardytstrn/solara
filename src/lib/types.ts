@@ -1,0 +1,1 @@
+export type ActivePage = 'home' | 'user' | 'instances' | 'mods' | 'performance' | 'settings';
