@@ -1,5 +1,5 @@
 <script lang="ts">
-    let { position = "right", delay = 400, text }: {
+    let { position = "right", text }: {
         position?: "right" | "left" | "top" | "bottom",
         text: string,
     } = $props();

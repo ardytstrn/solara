@@ -1,12 +1,8 @@
 <script lang="ts">
     import type { ActivePage } from "$lib/types";
     import Tooltip from '$lib/components/ui/Tooltip.svelte';
-    import UserIcon from "$lib/icons/UserIcon.svelte";
-    import InstancesIcon from "$lib/icons/InstancesIcon.svelte";
-    import ModsIcon from "$lib/icons/ModsIcon.svelte";
-    import PerformanceIcon from "$lib/icons/PerformanceIcon.svelte";
-    import AddInstanceIcon from "$lib/icons/AddInstanceIcon.svelte";
-    import SettingsIcon from "$lib/icons/SettingsIcon.svelte";
+
+    import { sidebarItems } from "$lib/config/sidebar.config";
 
     const { navigate, activePage }: {
         navigate(page: ActivePage): void;
@@ -15,7 +11,7 @@
 </script>
 
 <nav class="sidebar">
-    <div class="top">
+    <div class="group">
         <svg class="logo" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M18 12C18 15.3137 15.3137 18 12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12Z"/>
             <path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.25C12.4142 1.25 12.75 1.58579 12.75 2V3C12.75 3.41421 12.4142 3.75 12 3.75C11.5858 3.75 11.25 3.41421 11.25 3V2C11.25 1.58579 11.5858 1.25 12 1.25ZM1.25 12C1.25 11.5858 1.58579 11.25 2 11.25H3C3.41421 11.25 3.75 11.5858 3.75 12C3.75 12.4142 3.41421 12.75 3 12.75H2C1.58579 12.75 1.25 12.4142 1.25 12ZM20.25 12C20.25 11.5858 20.5858 11.25 21 11.25H22C22.4142 11.25 22.75 11.5858 22.75 12C22.75 12.4142 22.4142 12.75 22 12.75H21C20.5858 12.75 20.25 12.4142 20.25 12ZM12 20.25C12.4142 20.25 12.75 20.5858 12.75 21V22C12.75 22.4142 12.4142 22.75 12 22.75C11.5858 22.75 11.25 22.4142 11.25 22V21C11.25 20.5858 11.5858 20.25 12 20.25Z"/>
@@ -28,57 +24,30 @@
         </svg>
     </div>
 
-    <div class="middle">
-        <div class="sidebar-capsule">
-            <Tooltip text="Accounts">
-                <button
-                        class="sidebar-item"
-                        aria-label="Accounts"
-                        class:active={activePage === 'accounts'}
-                        onclick={() => navigate('accounts')}>
-                    <UserIcon/>
-                </button>
-            </Tooltip>
+    {#each sidebarItems as group}
+        <div class="group">
+            {#each group as capsule}
+                <div class="sidebar-capsule">
+                    {#each capsule as item}
+                        {@const Icon = item.icon}
+                        <Tooltip text={item.label}>
+                            <button
+                                    class="sidebar-item"
+                                    aria-label={item.label}
+                                    class:active={activePage === item.id}
+                                    onclick={() => {
+                                        if (!item.isAction) {
+                                            navigate(item.id as ActivePage);
+                                        }
+                                    }}>
+                                <Icon/>
+                            </button>
+                        </Tooltip>
+                    {/each}
+                </div>
+            {/each}
         </div>
-
-        <div class="sidebar-capsule">
-            <Tooltip text="Instances">
-                <button class="sidebar-item" aria-label="Instances" class:active={activePage === 'instances'} onclick={() => navigate('instances')}>
-                    <InstancesIcon/>
-                </button>
-            </Tooltip>
-
-            <Tooltip text="Mods">
-                <button class="sidebar-item" aria-label="Mods" class:active={activePage === 'mods'} onclick={() => navigate('mods')}>
-                    <ModsIcon/>
-                </button>
-            </Tooltip>
-
-            <Tooltip text="Performance Center">
-                <button class="sidebar-item" aria-label="Performance Center" class:active={activePage === 'performance'} onclick={() => navigate('performance')}>
-                    <PerformanceIcon/>
-                </button>
-            </Tooltip>
-        </div>
-
-        <div class="sidebar-capsule">
-            <Tooltip text="Add Instance">
-                <button class="sidebar-item" aria-label="Add Instance">
-                    <AddInstanceIcon/>
-                </button>
-            </Tooltip>
-        </div>
-    </div>
-
-    <div class="bottom">
-        <div class="sidebar-capsule">
-            <Tooltip text="Settings">
-                <button class="sidebar-item" aria-label="Settings" class:active={activePage === 'settings'} onclick={() => navigate('settings')}>
-                    <SettingsIcon/>
-                </button>
-            </Tooltip>
-        </div>
-    </div>
+    {/each}
 </nav>
 
 <style>
@@ -126,7 +95,7 @@
         transition: all 0.2s ease;
     }
 
-    .top, .middle, .bottom {
+    .group {
         display: flex;
         flex-direction: column;
         align-items: center;
