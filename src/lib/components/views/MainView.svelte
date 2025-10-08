@@ -10,7 +10,7 @@
 
 <main class="main-view-container">
     <div class="content-area">
-        {#if activePage === 'home'}
+        {#if activePage === 'accounts'}
             <HomePage />
         {:else}
             Active page: {activePage}

@@ -1,10 +1,31 @@
 <script lang="ts">
-    import type {ActivePage} from "$lib/types";
+    import type { ActivePage } from "$lib/types";
+    import Tooltip from '$lib/components/ui/Tooltip.svelte';
+    import UserIcon from "$lib/icons/UserIcon.svelte";
+    import InstancesIcon from "$lib/icons/InstancesIcon.svelte";
+    import ModsIcon from "$lib/icons/ModsIcon.svelte";
+    import PerformanceIcon from "$lib/icons/PerformanceIcon.svelte";
+    import AddInstanceIcon from "$lib/icons/AddInstanceIcon.svelte";
+    import SettingsIcon from "$lib/icons/SettingsIcon.svelte";
 
-    const {navigate, activePage}: {
+    const { navigate, activePage }: {
         navigate(page: ActivePage): void;
         activePage: ActivePage;
     } = $props();
+
+    let showTimeout: number;
+
+    function handleMouseEnter(event: MouseEvent & { target: EventTarget | null }, text: string) {
+        clearTimeout(showTimeout);
+        showTimeout = setTimeout(() => {
+            showTooltip(text, event.target as HTMLButtonElement);
+        }, 300);
+    }
+
+    function handleMouseLeave() {
+        clearTimeout(showTimeout);
+        hideTooltip();
+    }
 </script>
 
 <nav class="sidebar">
@@ -23,60 +44,56 @@
 
     <div class="middle">
         <div class="sidebar-capsule">
-            <button class="sidebar-item" aria-label="User" class:active={activePage === 'user'} onclick={() => navigate('user')}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="6" r="4"/>
-                    <path d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"/>
-                </svg>
-            </button>
+            <Tooltip text="Accounts">
+                <button
+                        class="sidebar-item"
+                        aria-label="Accounts"
+                        class:active={activePage === 'accounts'}
+                        onclick={() => navigate('accounts')}>
+                    <UserIcon/>
+                </button>
+            </Tooltip>
         </div>
 
         <div class="sidebar-capsule">
-            <button class="sidebar-item" aria-label="Instances" class:active={activePage === 'instances'} onclick={() => navigate('instances')}>
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M2 6.5C2 4.37868 2 3.31802 2.65901 2.65901C3.31802 2 4.37868 2 6.5 2C8.62132 2 9.68198 2 10.341 2.65901C11 3.31802 11 4.37868 11 6.5C11 8.62132 11 9.68198 10.341 10.341C9.68198 11 8.62132 11 6.5 11C4.37868 11 3.31802 11 2.65901 10.341C2 9.68198 2 8.62132 2 6.5Z"/>
-                    <path d="M13 17.5C13 15.3787 13 14.318 13.659 13.659C14.318 13 15.3787 13 17.5 13C19.6213 13 20.682 13 21.341 13.659C22 14.318 22 15.3787 22 17.5C22 19.6213 22 20.682 21.341 21.341C20.682 22 19.6213 22 17.5 22C15.3787 22 14.318 22 13.659 21.341C13 20.682 13 19.6213 13 17.5Z"/>
-                    <path d="M2 17.5C2 15.3787 2 14.318 2.65901 13.659C3.31802 13 4.37868 13 6.5 13C8.62132 13 9.68198 13 10.341 13.659C11 14.318 11 15.3787 11 17.5C11 19.6213 11 20.682 10.341 21.341C9.68198 22 8.62132 22 6.5 22C4.37868 22 3.31802 22 2.65901 21.341C2 20.682 2 19.6213 2 17.5Z"/>
-                    <path d="M13 6.5C13 4.37868 13 3.31802 13.659 2.65901C14.318 2 15.3787 2 17.5 2C19.6213 2 20.682 2 21.341 2.65901C22 3.31802 22 4.37868 22 6.5C22 8.62132 22 9.68198 21.341 10.341C20.682 11 19.6213 11 17.5 11C15.3787 11 14.318 11 13.659 10.341C13 9.68198 13 8.62132 13 6.5Z"/>
-                </svg>
-            </button>
+            <Tooltip text="Instances">
+                <button class="sidebar-item" aria-label="Instances" class:active={activePage === 'instances'} onclick={() => navigate('instances')}>
+                    <InstancesIcon/>
+                </button>
+            </Tooltip>
 
-            <button class="sidebar-item" aria-label="Mods" class:active={activePage === 'mods'} onclick={() => navigate('mods')}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M17.5777 4.43152L15.5777 3.38197C13.8221 2.46066 12.9443 2 12 2C11.0557 2 10.1779 2.46066 8.42229 3.38197L8.10057 3.5508L17.0236 8.64967L21.0403 6.64132C20.3941 5.90949 19.3515 5.36234 17.5777 4.43152Z"/>
-                    <path d="M21.7484 7.96434L17.75 9.96353V13C17.75 13.4142 17.4142 13.75 17 13.75C16.5858 13.75 16.25 13.4142 16.25 13V10.7135L12.75 12.4635V21.904C13.4679 21.7252 14.2848 21.2965 15.5777 20.618L17.5777 19.5685C19.7294 18.4393 20.8052 17.8748 21.4026 16.8603C22 15.8458 22 14.5833 22 12.0585V11.9415C22 10.0489 22 8.86557 21.7484 7.96434Z"/>
-                    <path d="M11.25 21.904V12.4635L2.25164 7.96434C2 8.86557 2 10.0489 2 11.9415V12.0585C2 14.5833 2 15.8458 2.5974 16.8603C3.19479 17.8748 4.27062 18.4393 6.42228 19.5685L8.42229 20.618C9.71524 21.2965 10.5321 21.7252 11.25 21.904Z"/>
-                    <path d="M2.95969 6.64132L12 11.1615L15.4112 9.4559L6.52456 4.37785L6.42229 4.43152C4.64855 5.36234 3.6059 5.90949 2.95969 6.64132Z"/>
-                </svg>
-            </button>
+            <Tooltip text="Mods">
+                <button class="sidebar-item" aria-label="Mods" class:active={activePage === 'mods'} onclick={() => navigate('mods')}>
+                    <ModsIcon/>
+                </button>
+            </Tooltip>
 
-            <button class="sidebar-item" aria-label="Performance Center" class:active={activePage === 'performance'} onclick={() => navigate('performance')}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5.66953 9.91436L8.73167 5.77133C10.711 3.09327 11.7007 1.75425 12.6241 2.03721C13.5474 2.32018 13.5474 3.96249 13.5474 7.24712V7.55682C13.5474 8.74151 13.5474 9.33386 13.926 9.70541L13.946 9.72466C14.3327 10.0884 14.9492 10.0884 16.1822 10.0884C18.4011 10.0884 19.5106 10.0884 19.8855 10.7613C19.8917 10.7724 19.8977 10.7837 19.9036 10.795C20.2576 11.4784 19.6152 12.3475 18.3304 14.0857L15.2683 18.2287C13.2889 20.9067 12.2992 22.2458 11.3758 21.9628C10.4525 21.6798 10.4525 20.0375 10.4525 16.7528L10.4526 16.4433C10.4526 15.2585 10.4526 14.6662 10.074 14.2946L10.054 14.2754C9.6673 13.9117 9.05079 13.9117 7.81775 13.9117C5.59888 13.9117 4.48945 13.9117 4.1145 13.2387C4.10829 13.2276 4.10225 13.2164 4.09639 13.205C3.74244 12.5217 4.3848 11.6526 5.66953 9.91436Z"/>
-                </svg>
-            </button>
+            <Tooltip text="Performance Center">
+                <button class="sidebar-item" aria-label="Performance Center" class:active={activePage === 'performance'} onclick={() => navigate('performance')}>
+                    <PerformanceIcon/>
+                </button>
+            </Tooltip>
         </div>
 
         <div class="sidebar-capsule">
-            <button class="sidebar-item" aria-label="Add Instance">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM12.75 9C12.75 8.58579 12.4142 8.25 12 8.25C11.5858 8.25 11.25 8.58579 11.25 9L11.25 11.25H9C8.58579 11.25 8.25 11.5858 8.25 12C8.25 12.4142 8.58579 12.75 9 12.75H11.25V15C11.25 15.4142 11.5858 15.75 12 15.75C12.4142 15.75 12.75 15.4142 12.75 15L12.75 12.75H15C15.4142 12.75 15.75 12.4142 15.75 12C15.75 11.5858 15.4142 11.25 15 11.25H12.75V9Z"/>
-                </svg>
-            </button>
+            <Tooltip text="Add Instance">
+                <button class="sidebar-item" aria-label="Add Instance">
+                    <AddInstanceIcon/>
+                </button>
+            </Tooltip>
         </div>
     </div>
 
     <div class="bottom">
         <div class="sidebar-capsule">
-            <button class="sidebar-item" aria-label="Settings" class:active={activePage === 'settings'} onclick={() => navigate('settings')}>
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M14.2788 2.15224C13.9085 2 13.439 2 12.5 2C11.561 2 11.0915 2 10.7212 2.15224C10.2274 2.35523 9.83509 2.74458 9.63056 3.23463C9.53719 3.45834 9.50065 3.7185 9.48635 4.09799C9.46534 4.65568 9.17716 5.17189 8.69017 5.45093C8.20318 5.72996 7.60864 5.71954 7.11149 5.45876C6.77318 5.2813 6.52789 5.18262 6.28599 5.15102C5.75609 5.08178 5.22018 5.22429 4.79616 5.5472C4.47814 5.78938 4.24339 6.1929 3.7739 6.99993C3.30441 7.80697 3.06967 8.21048 3.01735 8.60491C2.94758 9.1308 3.09118 9.66266 3.41655 10.0835C3.56506 10.2756 3.77377 10.437 4.0977 10.639C4.57391 10.936 4.88032 11.4419 4.88029 12C4.88026 12.5581 4.57386 13.0639 4.0977 13.3608C3.77372 13.5629 3.56497 13.7244 3.41645 13.9165C3.09108 14.3373 2.94749 14.8691 3.01725 15.395C3.06957 15.7894 3.30432 16.193 3.7738 17C4.24329 17.807 4.47804 18.2106 4.79606 18.4527C5.22008 18.7756 5.75599 18.9181 6.28589 18.8489C6.52778 18.8173 6.77305 18.7186 7.11133 18.5412C7.60852 18.2804 8.2031 18.27 8.69012 18.549C9.17714 18.8281 9.46533 19.3443 9.48635 19.9021C9.50065 20.2815 9.53719 20.5417 9.63056 20.7654C9.83509 21.2554 10.2274 21.6448 10.7212 21.8478C11.0915 22 11.561 22 12.5 22C13.439 22 13.9085 22 14.2788 21.8478C14.7726 21.6448 15.1649 21.2554 15.3694 20.7654C15.4628 20.5417 15.4994 20.2815 15.5137 19.902C15.5347 19.3443 15.8228 18.8281 16.3098 18.549C16.7968 18.2699 17.3914 18.2804 17.8886 18.5412C18.2269 18.7186 18.4721 18.8172 18.714 18.8488C19.2439 18.9181 19.7798 18.7756 20.2038 18.4527C20.5219 18.2105 20.7566 17.807 21.2261 16.9999C21.6956 16.1929 21.9303 15.7894 21.9827 15.395C22.0524 14.8691 21.9088 14.3372 21.5835 13.9164C21.4349 13.7243 21.2262 13.5628 20.9022 13.3608C20.4261 13.0639 20.1197 12.558 20.1197 11.9999C20.1197 11.4418 20.4261 10.9361 20.9022 10.6392C21.2263 10.4371 21.435 10.2757 21.5836 10.0835C21.9089 9.66273 22.0525 9.13087 21.9828 8.60497C21.9304 8.21055 21.6957 7.80703 21.2262 7C20.7567 6.19297 20.522 5.78945 20.2039 5.54727C19.7799 5.22436 19.244 5.08185 18.7141 5.15109C18.4722 5.18269 18.2269 5.28136 17.8887 5.4588C17.3915 5.71959 16.7969 5.73002 16.3099 5.45096C15.8229 5.17191 15.5347 4.65566 15.5136 4.09794C15.4993 3.71848 15.4628 3.45833 15.3694 3.23463C15.1649 2.74458 14.7726 2.35523 14.2788 2.15224ZM12.5 15C14.1695 15 15.5228 13.6569 15.5228 12C15.5228 10.3431 14.1695 9 12.5 9C10.8305 9 9.47716 10.3431 9.47716 12C9.47716 13.6569 10.8305 15 12.5 15Z"/>
-                </svg>
-            </button>
+            <Tooltip text="Settings">
+                <button class="sidebar-item" aria-label="Settings" class:active={activePage === 'settings'} onclick={() => navigate('settings')}>
+                    <SettingsIcon/>
+                </button>
+            </Tooltip>
         </div>
     </div>
 </nav>
-
 
 <style>
     .sidebar {
@@ -116,15 +133,11 @@
         justify-content: center;
     }
 
-    .sidebar-item svg {
+    :global(.sidebar-item svg) {
         width: 50%;
         height: 50%;
         fill: var(--color-text-secondary);
         transition: all 0.2s ease;
-    }
-
-    .sidebar-item[aria-label="Settings"] svg {
-        transform: scale(1.05);
     }
 
     .top, .middle, .bottom {
@@ -135,11 +148,11 @@
         gap: 16px;
     }
 
-    .sidebar-item:hover svg {
+    :global(.sidebar-item:hover svg) {
         fill: var(--color-text-primary);
     }
 
-    .sidebar-item.active svg {
+    :global(.sidebar-item.active svg) {
         fill: var(--color-accent);
     }
 

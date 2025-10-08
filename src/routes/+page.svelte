@@ -1,7 +1,7 @@
 <script lang="ts">
   import type {ActivePage} from "$lib/types";
 
-  let activePage = $state<ActivePage>('home');
+  let activePage = $state<ActivePage>('accounts');
 
   function handleNavigation(page: ActivePage) {
     activePage = page;
