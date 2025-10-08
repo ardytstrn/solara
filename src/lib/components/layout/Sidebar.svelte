@@ -12,20 +12,6 @@
         navigate(page: ActivePage): void;
         activePage: ActivePage;
     } = $props();
-
-    let showTimeout: number;
-
-    function handleMouseEnter(event: MouseEvent & { target: EventTarget | null }, text: string) {
-        clearTimeout(showTimeout);
-        showTimeout = setTimeout(() => {
-            showTooltip(text, event.target as HTMLButtonElement);
-        }, 300);
-    }
-
-    function handleMouseLeave() {
-        clearTimeout(showTimeout);
-        hideTooltip();
-    }
 </script>
 
 <nav class="sidebar">
