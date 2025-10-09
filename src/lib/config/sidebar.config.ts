@@ -5,7 +5,7 @@ import AddInstanceIcon from "$lib/icons/AddInstanceIcon.svelte";
 import ModsIcon from "$lib/icons/ModsIcon.svelte";
 import InstancesIcon from "$lib/icons/InstancesIcon.svelte";
 import SettingsIcon from "$lib/icons/SettingsIcon.svelte";
-import type {Component} from "svelte";
+import type { Component } from "svelte";
 
 export interface SidebarItem {
     id: ActivePage | 'add-instance';

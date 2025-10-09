@@ -52,7 +52,7 @@
 
 <style>
     .sidebar {
-        width: 60px;
+        width: 90px;
         background-color: var(--color-sidebar);
         display: flex;
         flex-direction: column;

@@ -5,23 +5,20 @@
         activePage: ActivePage;
     } = $props();
 
-    import HomePage from "$lib/components/pages/HomePage.svelte";
+    import AccountsPage from "$lib/components/pages/AccountsPage.svelte";
 </script>
 
 <main class="main-view-container">
-    <div class="content-area">
         {#if activePage === 'accounts'}
-            <HomePage />
+            <AccountsPage />
         {:else}
             Active page: {activePage}
         {/if}
-    </div>
 </main>
 
 <style>
-    .content-area {
-        flex-grow: 1;
-        display: flex;
-        position: relative;
+    .main-view-container {
+        width: 90%;
+        height: 100%;
     }
 </style>

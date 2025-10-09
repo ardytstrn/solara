@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
 
 :root {
-    --color-background: rgb(26, 27, 34);
+    --color-background: linear-gradient(180deg,rgba(27, 28, 32, 1) 0%, rgba(16, 17, 19, 1) 100%);
     --color-sidebar: rgb(20, 21, 26);
     --color-text-primary: #EAEAEA;
     --color-text-secondary: #8A8B92;
@@ -10,6 +10,15 @@
     --border-radius-main: 12px;
     --border-radius-small: 8px;
     --font-main: 'Inter';
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
 }
 
 body {

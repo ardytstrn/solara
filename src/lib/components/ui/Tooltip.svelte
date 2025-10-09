@@ -15,6 +15,7 @@
         position: relative;
         display: inline-block;
         cursor: pointer;
+        z-index: 9999;
     }
 
     .tooltip {
