@@ -1,4 +1,9 @@
 <script>
+    import { invoke } from "@tauri-apps/api/core";
+
+    invoke("add_offline_account", {
+        username: "a"
+    }).then(console.log).catch(console.error)
 </script>
 
 <div class="content-area">
