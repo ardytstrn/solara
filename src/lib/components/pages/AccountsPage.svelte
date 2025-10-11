@@ -1,9 +1,27 @@
-<script>
-    import { invoke } from "@tauri-apps/api/core";
+<script lang="ts">
+    import type {UserProfile, AccountType} from "$lib/types";
+    import {invoke} from "@tauri-apps/api/core";
 
-    invoke("add_offline_account", {
-        username: "a"
-    }).then(console.log).catch(console.error)
+    let accounts: UserProfile[] = $state([]);
+    let activeAccount: UserProfile | null = $state(null);
+
+    async function loadAccounts() {
+        try {
+            const fetchedAccounts: UserProfile[] = await invoke("get_accounts");
+            console.log("Fetched:", fetchedAccounts);
+            accounts = fetchedAccounts;
+
+            if (!activeAccount && accounts.length > 0) {
+                activeAccount = accounts[0];
+            }
+        } catch (error) {
+            console.error("Failed to fetch accounts:", error);
+        }
+    }
+
+    $effect(() => {
+        loadAccounts();
+    })
 </script>
 
 <div class="content-area">
@@ -12,70 +30,54 @@
             <div class="widget">
                 <h2 class="widget-title">Accounts</h2>
                 <div class="account-list">
-                    <div class="account-item">
-                        <img src="https://s.namemc.com/2d/skin/face.png?id=b3c20094038702c6&scale=4">
-                        <div class="account-info">
-                            <span class="name">nick1</span>
-                            <span class="type">Microsoft Account</span>
+                    {#each accounts as account (account.uuid)}
+                        <div class="account-item" class:active={activeAccount?.uuid === account.uuid}>
+                            <img src="{account.avatarUrl}" alt="{account.username} Avatar">
+                            <div class="account-info">
+                                <span class="name">{account.username}</span>
+                                <span class="type">{account.accountType === "offline" ? "Offline" : "Microsoft"}
+                                    Account</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="account-item">
-                        <img src="https://s.namemc.com/2d/skin/face.png?id=b84ac9a32c374ef1&scale=4">
-                        <div class="account-info">
-                            <span class="name">nick2</span>
-                            <span class="type">Offline Account</span>
-                        </div>
-                    </div>
-                    <div class="account-item active">
-                        <img src="https://s.namemc.com/2d/skin/face.png?id=071a5adae0927f93&scale=4">
-                        <div class="account-info">
-                            <span class="name">nick3</span>
-                            <span class="type">Microsoft Account</span>
-                        </div>
-                    </div>
-                    <div class="account-item">
-                        <img src="https://s.namemc.com/2d/skin/face.png?id=458a9409b73a9618&scale=4">
-                        <div class="account-info">
-                            <span class="name">nick4</span>
-                            <span class="type">Offline Account</span>
-                        </div>
-                    </div>
-
+                    {/each}
                     <button class="add-account-button">+ Add Account</button>
                 </div>
             </div>
         </div>
         <div class="right-column">
-            <div class="widget">
-                <h2 class="widget-title">You</h2>
-                <div class="data-row">
-                    <span class="label">Nickname</span>
-                    <span class="value">nick3</span>
+            {#if activeAccount}
+                <div class="widget">
+                    <h2 class="widget-title">You</h2>
+                    <div class="data-row">
+                        <span class="label">Username</span>
+                        <span class="value">{activeAccount.username}</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">UUID</span>
+                        <span class="value">{activeAccount.uuid}</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">Account Type</span>
+                        <span class="value">{activeAccount.accountType === "offline" ? "Offline" : "Microsoft"}
+                            Account</span>
+                    </div>
                 </div>
-                <div class="data-row">
-                    <span class="label">Email</span>
-                    <span class="value">example3@hotmail.com</span>
+                <div class="widget">
+                    <h2 class="widget-title">Statistics</h2>
+                    <div class="data-row">
+                        <span class="label">Total Playtime</span>
+                        <span class="value">275 hours</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">Favorite Instance</span>
+                        <span class="value">Fabric 1.20.4</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">Last Played</span>
+                        <span class="value">Today</span>
+                    </div>
                 </div>
-                <div class="data-row">
-                    <span class="label">Account Type</span>
-                    <span class="value">Microsoft Account</span>
-                </div>
-            </div>
-            <div class="widget">
-                <h2 class="widget-title">Statistics</h2>
-                <div class="data-row">
-                    <span class="label">Total Playtime</span>
-                    <span class="value">275 hours</span>
-                </div>
-                <div class="data-row">
-                    <span class="label">Favorite Instance</span>
-                    <span class="value">Fabric 1.20.4</span>
-                </div>
-                <div class="data-row">
-                    <span class="label">Last Played</span>
-                    <span class="value">Today</span>
-                </div>
-            </div>
+            {/if}
         </div>
     </div>
 
@@ -83,12 +85,14 @@
         <h2 class="widget-title">Skin & Cape</h2>
         <div class="skin-widget-content">
             <div class="skin-preview">
-                <img src="https://s.namemc.com/3d/skin/body.png?id=071a5adae0927f93&model=slim&width=384&height=384" alt="Minecraft Skin Preview">
+                <img src="https://s.namemc.com/3d/skin/body.png?id=071a5adae0927f93&model=slim&width=384&height=384"
+                     alt="Minecraft Skin Preview">
             </div>
 
             <div class="info-panel">
                 <h3 class="title">Your Look</h3>
-                <p class="description">Your current skin and cape are linked to your Microsoft Account. To make changes please visit the official Minecraft website. Your changes will sync automatically.</p>
+                <p class="description">Your current skin and cape are linked to your Microsoft Account. To make changes
+                    please visit the official Minecraft website. Your changes will sync automatically.</p>
                 <div class="action-buttons">
                     <button class="primary">
                         Manage on Minecraft.net
