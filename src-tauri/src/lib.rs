@@ -1,17 +1,23 @@
+use crate::models::UserProfile;
 use tauri::AppHandle;
 
-mod models;
+mod error;
 mod manager;
+mod models;
+
+type CommandResult<T> = std::result::Result<T, error::Error>;
 
 #[tauri::command]
-fn get_accounts(app_handle: AppHandle) -> Result<Vec<models::UserProfile>, String> {
+fn get_accounts(app_handle: AppHandle) -> CommandResult<Vec<UserProfile>> {
     manager::account_manager::get_all_accounts(&app_handle)
 }
 
 #[tauri::command]
-fn add_offline_account(app_handle: AppHandle, username: String) -> Result<models::UserProfile, String> {
+fn add_offline_account(app_handle: AppHandle, username: String) -> CommandResult<UserProfile> {
     if username.is_empty() || username.len() < 3 {
-        return Err("Username must be at least 3 characters long.".to_string());
+        return Err(error::Error::Validation(
+            "Username must be at least 3 characters long".to_string(),
+        ));
     }
     manager::account_manager::add_offline_account(&app_handle, &username)
 }
